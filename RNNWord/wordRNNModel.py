@@ -25,10 +25,12 @@ for sen in sents:
 
 # print(len(corpus))
 # print(corpus[:3])
-print(1)
+# print(1)
 #W2V把单词变成数字坐标
-w2v_model = Word2Vec(corpus, size=128, window=5, min_count=5, workers=4)
-w2v_model.save("w2vmodel.w2v")
+# w2v_model = Word2Vec(corpus, size=128, window=5, min_count=5, workers=4)
+# w2v_model.save("w2vmodel.w2v")
+
+w2v_model = Word2Vec.load("w2vmodel.w2v")
 # print(w2v_model['office'])
 print(1)
 raw_input = [item for sublist in corpus for item in sublist]
@@ -62,16 +64,15 @@ x = np.reshape(x, (-1, seq_length, 128))
 y = np.reshape(y, (-1, 128))
 
 model = Sequential()
-model.add(LSTM(512, dropout_W=0.2, dropout_U=0.2, input_shape=(seq_length, 128)))
-model.add(LSTM(256, dropout_W=0.2, dropout_U=0.2, input_shape=(seq_length, 128)))
-model.add(LSTM(128, dropout_W=0.2, dropout_U=0.2, input_shape=(seq_length, 128)))
+model.add(LSTM(512, dropout_W=0.2, dropout_U=0.2, input_shape=(seq_length, 128), return_sequences=True))
+model.add(LSTM(128))
 model.add(Dropout(0.2))
 model.add(Dense(128, activation='sigmoid'))
 model.compile(loss='mse', optimizer='adam')
 
 model.fit(x, y, nb_epoch=100, batch_size=4096)
 
-model.save("./trainedModelWord2.tf")
+model.save("./trainedModelWord3.tf")
 
 
 def predict_next(input_array):
